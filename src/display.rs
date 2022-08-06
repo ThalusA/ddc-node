@@ -101,10 +101,9 @@ impl JsDisplay {
         .handle
         .capabilities_string()
         .map_or(None, |capabilities_string| {
-          std::str::from_utf8(capabilities_string.as_slice())
-            .map_or(None, |capabilities_string| {
-              Some(capabilities_string.to_string())
-            })
+          std::str::from_utf8(capabilities_string.as_slice()).map_or(None, |capabilities_string| {
+            Some(capabilities_string.to_string())
+          })
         }),
       display,
     }
