@@ -100,29 +100,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@napi-rs/package-template@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@napi-rs/package-template@workspace:."
-  dependencies:
-    "@napi-rs/cli": ^2.10.3
-    "@swc-node/register": ^1.5.1
-    "@typescript-eslint/eslint-plugin": ^5.31.0
-    "@typescript-eslint/parser": ^5.31.0
-    ava: ^4.3.1
-    benny: ^3.7.1
-    chalk: ^5.0.1
-    eslint: ^8.20.0
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-import: ^2.26.0
-    eslint-plugin-prettier: ^4.2.1
-    husky: ^8.0.1
-    lint-staged: ^13.0.3
-    npm-run-all: ^4.1.5
-    prettier: ^2.7.1
-    typescript: ^4.7.4
-  languageName: unknown
-  linkType: soft
-
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -1221,6 +1198,29 @@ __metadata:
   checksum: f9cfcd1b15dfeabab15c0b9d18eb9e4e2d9d4371713564178d46a8f91ad577a290b5178b80050718d02d9c0cf646f8a875011e12d1ed05871e9f72c72c8a8fe6
   languageName: node
   linkType: hard
+
+"ddc-node@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "ddc-node@workspace:."
+  dependencies:
+    "@napi-rs/cli": ^2.10.3
+    "@swc-node/register": ^1.5.1
+    "@typescript-eslint/eslint-plugin": ^5.31.0
+    "@typescript-eslint/parser": ^5.31.0
+    ava: ^4.3.1
+    benny: ^3.7.1
+    chalk: ^5.0.1
+    eslint: ^8.20.0
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-import: ^2.26.0
+    eslint-plugin-prettier: ^4.2.1
+    husky: ^8.0.1
+    lint-staged: ^13.0.3
+    npm-run-all: ^4.1.5
+    prettier: ^2.7.1
+    typescript: ^4.7.4
+  languageName: unknown
+  linkType: soft
 
 "debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
   version: 4.3.4
