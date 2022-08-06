@@ -1,8 +1,10 @@
 import test from 'ava'
 
-import { plus100 } from '../index'
+import { DisplayManager } from '../index'
 
-test('sync function from native code', (t) => {
-  const fixture = 42
-  t.is(plus100(fixture), fixture + 100)
+test('list every displays available', () => {
+  const displays = new DisplayManager().list()
+  for (const display of displays) {
+    console.info(display) // Print display data on the console
+  }
 })

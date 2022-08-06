@@ -1,21 +1,16 @@
 import b from 'benny'
 
-import { plus100 } from '../index'
-
-function add(a: number) {
-  return a + 100
-}
+import { DisplayManager } from '../index'
 
 async function run() {
   await b.suite(
-    'Add 100',
+    'List displays',
 
-    b.add('Native a + 100', () => {
-      plus100(10)
-    }),
-
-    b.add('JavaScript a + 100', () => {
-      add(10)
+    b.add('Native list displays', () => {
+      const displays = new DisplayManager().list()
+      for (const display of displays) {
+        console.info(display) // Print display data on the console
+      }
     }),
 
     b.cycle(),
