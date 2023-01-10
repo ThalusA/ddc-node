@@ -228,9 +228,10 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { Display, VcpValueType, JsQueryType, DisplayManager } = nativeBinding
+const { Display, VcpValueType, JsQueryType, DisplayManager, VCPFeatureCode } = nativeBinding
 
 module.exports.Display = Display
 module.exports.VcpValueType = VcpValueType
 module.exports.JsQueryType = JsQueryType
 module.exports.DisplayManager = DisplayManager
+module.exports.VCPFeatureCode = VCPFeatureCode
