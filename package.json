@@ -1,6 +1,6 @@
 {
   "name": "ddc-node",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Alexandre MONIER <alexandre.monierc@gmail.com>",
   "description": "DDC/CI high level library for NodeJS (cross platform)",
   "main": "index.js",
