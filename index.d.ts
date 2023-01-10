@@ -6,7 +6,7 @@
 export const enum VcpValueType {
   Continuous = 0,
   NonContinuous = 1,
-  Table = 2,
+  Table = 2
 }
 export interface Continuous {
   currentValue: number
@@ -28,7 +28,7 @@ export const enum JsQueryType {
   Id = 1,
   ManufacturerId = 2,
   ModelName = 3,
-  SerialNumber = 4,
+  SerialNumber = 4
 }
 export interface Query {
   queryType: JsQueryType
@@ -52,7 +52,7 @@ export class Display {
   capabilities?: string
   constructor(index: number)
   getVcpFeature(featureCode: number): Promise<Continuous | NonContinuous | Table>
-  setVcpFeature(featureCode: number, valueOrOffset: number, bytes?: Array<number> | undefined | null): Promise<void>
+  setVcpFeature(featureCode: number, valueOrOffset: number, bytes?: Array<number> | undefined | null): Promise<undefined>
 }
 export type JsDisplayManager = DisplayManager
 export class DisplayManager {

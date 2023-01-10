@@ -2,9 +2,10 @@ use ddc::{Ddc, DdcHost, DdcTable};
 use ddc_hi::Display;
 use mccs_db::ValueType;
 use napi::bindgen_prelude::*;
-use napi::{Error, Status};
 use napi_derive::napi;
 use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+use napi::JsUndefined;
 
 #[napi(js_name = "Display")]
 pub struct JsDisplay {
@@ -22,7 +23,7 @@ pub struct JsDisplay {
   pub manufacture_year: Option<u8>,
   pub manufacture_week: Option<u8>,
   pub capabilities: Option<String>,
-  display: Display,
+  display: Arc<Mutex<Display>>,
 }
 
 #[napi]
@@ -56,6 +57,153 @@ pub struct Table {
   pub r#type: VcpValueType,
 }
 
+pub struct AsyncGetVcp {
+  display: Arc<Mutex<Display>>,
+  feature_code: u8,
+}
+
+#[napi]
+impl Task for AsyncGetVcp {
+  type Output = Either3<Continuous, NonContinuous, Table>;
+  type JsValue = Either3<Continuous, NonContinuous, Table>;
+
+  fn compute(&mut self) -> Result<Self::Output> {
+    let mut display = self.display.lock().unwrap();
+    if let Some(feature) = display.info.mccs_database.get(self.feature_code).cloned() {
+      match feature.ty {
+        ValueType::Unknown => {
+          let vcp_feature_value = display.handle
+              .get_vcp_feature(self.feature_code)
+              .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+          let current_value = vcp_feature_value.value();
+          let maximum_value = vcp_feature_value.maximum();
+          display.handle.sleep();
+          Ok(Either3::A(Continuous {
+            current_value,
+            maximum_value,
+            r#type: VcpValueType::Continuous,
+          }))
+        }
+        ValueType::Continuous {
+          interpretation: _interpretation,
+        } => {
+          let vcp_feature_value = display.handle
+              .get_vcp_feature(self.feature_code)
+              .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+          let current_value = vcp_feature_value.value();
+          let maximum_value = vcp_feature_value.maximum();
+          display.handle.sleep();
+          Ok(Either3::A(Continuous {
+            current_value,
+            maximum_value,
+            r#type: VcpValueType::Continuous,
+          }))
+        }
+        ValueType::NonContinuous {
+          ref values,
+          interpretation: _interpretation,
+        } => {
+          let vcp_feature_value = display.handle
+              .get_vcp_feature(self.feature_code)
+              .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+          let mut current_value = (vcp_feature_value.value(), None);
+          let possible_values = HashMap::from_iter(
+            values
+                .clone()
+                .into_iter()
+                .map(|(value, value_representation)| (value.to_string(), value_representation)),
+          );
+          if let Some(&Some(ref name)) = values.get(&(vcp_feature_value.value() as u8)) {
+            current_value.1 = Some(name.clone());
+          }
+          display.handle.sleep();
+          Ok(Either3::B(NonContinuous {
+            current_value: current_value.0,
+            current_value_representation: current_value.1,
+            possible_values,
+            r#type: VcpValueType::NonContinuous,
+          }))
+        }
+        ValueType::Table {
+          interpretation: _interpretation,
+        } => {
+          let vcp_feature_value = display.handle
+              .table_read(self.feature_code)
+              .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+          display.handle.sleep();
+          Ok(Either3::C(Table {
+            current_data: vcp_feature_value,
+            r#type: VcpValueType::Table,
+          }))
+        }
+      }
+    } else {
+      match display.handle.table_read(self.feature_code) {
+        Ok(vcp_feature_value) => {
+          display.handle.sleep();
+          Ok(Either3::C(Table {
+            current_data: vcp_feature_value,
+            r#type: VcpValueType::Table,
+          }))
+        }
+        Err(_) => {
+          let vcp_feature_value = display.handle
+              .get_vcp_feature(self.feature_code)
+              .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+          let current_value = vcp_feature_value.value();
+          let maximum_value = vcp_feature_value.maximum();
+          display.handle.sleep();
+          Ok(Either3::A(Continuous {
+            current_value,
+            maximum_value,
+            r#type: VcpValueType::Continuous,
+          }))
+        }
+      }
+    }
+  }
+
+  fn resolve(&mut self, _: Env, output: Self::Output) -> Result<Self::JsValue> {
+    Ok(output)
+  }
+}
+
+pub struct AsyncSetVcp {
+  display: Arc<Mutex<Display>>,
+  feature_code: u8,
+  value_or_offset: u16,
+  bytes: Option<Vec<u8>>
+}
+
+#[napi]
+impl Task for AsyncSetVcp {
+  type Output = ();
+  type JsValue = JsUndefined;
+
+  fn compute(&mut self) -> Result<Self::Output> {
+    let mut display = self.display.lock().unwrap();
+    if let Some(bytes) = self.bytes.clone() {
+      display
+          .handle
+          .table_write(self.feature_code, self.value_or_offset, &bytes)
+          .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+      display.handle.sleep();
+      Ok(())
+    } else {
+      display
+          .handle
+          .set_vcp_feature(self.feature_code, self.value_or_offset)
+          .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+      display.handle.sleep();
+      Ok(())
+    }
+  }
+
+  fn resolve(&mut self, env: Env, _: Self::Output) -> Result<Self::JsValue> {
+    env.get_undefined()
+  }
+}
+
 #[napi]
 impl JsDisplay {
   #[napi(constructor)]
@@ -64,7 +212,7 @@ impl JsDisplay {
       .into_iter()
       .nth(index as usize)
       .map(|display| JsDisplay::from_display(index, display))
-      .ok_or(Error::new(
+      .ok_or_else(|| Error::new(
         Status::InvalidArg,
         format!("Out of bound: There is no display at index {}", index),
       ))
@@ -73,22 +221,20 @@ impl JsDisplay {
   pub fn from_display(index: u32, mut display: Display) -> Self {
     JsDisplay {
       index,
-      backend: display.info.backend.to_string().clone(),
+      backend: display.info.backend.to_string(),
       edid_data: display
         .info
         .edid_data
         .clone()
-        .map(|edid_data| Uint8Array::new(edid_data)),
+        .map(Uint8Array::new),
       version: display
         .info
         .version
-        .map(|(major, minor)| format!("{}.{}", major, minor))
-        .clone(),
+        .map(|(major, minor)| format!("{}.{}", major, minor)),
       mccs_version: display
         .info
         .mccs_version
-        .map(|mcc_version| mcc_version.to_string())
-        .clone(),
+        .map(|mcc_version| mcc_version.to_string()),
       display_id: display.info.id.clone(),
       serial: display.info.serial,
       serial_number: display.info.serial_number.clone(),
@@ -105,134 +251,33 @@ impl JsDisplay {
             Some(capabilities_string.to_string())
           })
         }),
-      display,
+      display: Arc::new(Mutex::new(display)),
     }
   }
 
   #[napi]
-  pub async fn get_vcp_feature(
+  pub fn get_vcp_feature(
     &mut self,
     feature_code: u8,
-  ) -> Result<Either3<Continuous, NonContinuous, Table>> {
-    let feature = self.display.info.mccs_database.get(feature_code);
-    let handle = &mut self.display.handle;
-    if let Some(feature) = feature {
-      match feature.ty {
-        ValueType::Unknown => {
-          let vcp_feature_value = handle
-            .get_vcp_feature(feature_code)
-            .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
-          let current_value = vcp_feature_value.value();
-          let maximum_value = vcp_feature_value.maximum();
-          handle.sleep();
-          Ok(Either3::A(Continuous {
-            current_value,
-            maximum_value,
-            r#type: VcpValueType::Continuous,
-          }))
-        }
-        ValueType::Continuous {
-          interpretation: _interpretation,
-        } => {
-          let vcp_feature_value = handle
-            .get_vcp_feature(feature_code)
-            .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
-          let current_value = vcp_feature_value.value();
-          let maximum_value = vcp_feature_value.maximum();
-          handle.sleep();
-          Ok(Either3::A(Continuous {
-            current_value,
-            maximum_value,
-            r#type: VcpValueType::Continuous,
-          }))
-        }
-        ValueType::NonContinuous {
-          ref values,
-          interpretation: _interpretation,
-        } => {
-          let vcp_feature_value = handle
-            .get_vcp_feature(feature_code)
-            .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
-          let mut current_value = (vcp_feature_value.value(), None);
-          let possible_values = HashMap::from_iter(
-            values
-              .clone()
-              .into_iter()
-              .map(|(value, value_representation)| (value.to_string(), value_representation)),
-          );
-          if let Some(&Some(ref name)) = values.get(&(vcp_feature_value.value() as u8)) {
-            current_value.1 = Some(name.clone());
-          }
-          handle.sleep();
-          Ok(Either3::B(NonContinuous {
-            current_value: current_value.0,
-            current_value_representation: current_value.1,
-            possible_values,
-            r#type: VcpValueType::NonContinuous,
-          }))
-        }
-        ValueType::Table {
-          interpretation: _interpretation,
-        } => {
-          let vcp_feature_value = handle
-            .table_read(feature_code)
-            .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
-          handle.sleep();
-          Ok(Either3::C(Table {
-            current_data: vcp_feature_value,
-            r#type: VcpValueType::Table,
-          }))
-        }
-      }
-    } else {
-      match handle.table_read(feature_code) {
-        Ok(vcp_feature_value) => {
-          handle.sleep();
-          Ok(Either3::C(Table {
-            current_data: vcp_feature_value,
-            r#type: VcpValueType::Table,
-          }))
-        }
-        Err(_) => {
-          let vcp_feature_value = handle
-            .get_vcp_feature(feature_code)
-            .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
-          let current_value = vcp_feature_value.value();
-          let maximum_value = vcp_feature_value.maximum();
-          handle.sleep();
-          Ok(Either3::A(Continuous {
-            current_value,
-            maximum_value,
-            r#type: VcpValueType::Continuous,
-          }))
-        }
-      }
-    }
+  ) -> AsyncTask<AsyncGetVcp> {
+    AsyncTask::new(AsyncGetVcp {
+      display: self.display.clone(),
+      feature_code,
+    })
   }
 
   #[napi]
-  pub async fn set_vcp_feature(
+  pub fn set_vcp_feature(
     &mut self,
     feature_code: u8,
     value_or_offset: u16,
     bytes: Option<Vec<u8>>,
-  ) -> Result<()> {
-    if let Some(bytes) = bytes {
-      let result = self
-        .display
-        .handle
-        .table_write(feature_code, value_or_offset, &bytes)
-        .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
-      self.display.handle.sleep();
-      Ok(result)
-    } else {
-      let result = self
-        .display
-        .handle
-        .set_vcp_feature(feature_code, value_or_offset)
-        .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
-      self.display.handle.sleep();
-      Ok(result)
-    }
+  ) -> AsyncTask<AsyncSetVcp> {
+    AsyncTask::new(AsyncSetVcp {
+      display: self.display.clone(),
+      feature_code,
+      value_or_offset,
+      bytes,
+    })
   }
 }
