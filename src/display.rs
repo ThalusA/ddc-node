@@ -2,10 +2,10 @@ use ddc::{Ddc, DdcHost, DdcTable};
 use ddc_hi::Display;
 use mccs_db::ValueType;
 use napi::bindgen_prelude::*;
+use napi::JsUndefined;
 use napi_derive::napi;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use napi::JsUndefined;
 
 #[napi(js_name = "Display")]
 pub struct JsDisplay {
@@ -72,9 +72,10 @@ impl Task for AsyncGetVcp {
     if let Some(feature) = display.info.mccs_database.get(self.feature_code).cloned() {
       match feature.ty {
         ValueType::Unknown => {
-          let vcp_feature_value = display.handle
-              .get_vcp_feature(self.feature_code)
-              .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+          let vcp_feature_value = display
+            .handle
+            .get_vcp_feature(self.feature_code)
+            .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
           let current_value = vcp_feature_value.value();
           let maximum_value = vcp_feature_value.maximum();
           display.handle.sleep();
@@ -87,9 +88,10 @@ impl Task for AsyncGetVcp {
         ValueType::Continuous {
           interpretation: _interpretation,
         } => {
-          let vcp_feature_value = display.handle
-              .get_vcp_feature(self.feature_code)
-              .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+          let vcp_feature_value = display
+            .handle
+            .get_vcp_feature(self.feature_code)
+            .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
           let current_value = vcp_feature_value.value();
           let maximum_value = vcp_feature_value.maximum();
           display.handle.sleep();
@@ -103,15 +105,16 @@ impl Task for AsyncGetVcp {
           ref values,
           interpretation: _interpretation,
         } => {
-          let vcp_feature_value = display.handle
-              .get_vcp_feature(self.feature_code)
-              .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+          let vcp_feature_value = display
+            .handle
+            .get_vcp_feature(self.feature_code)
+            .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
           let mut current_value = (vcp_feature_value.value(), None);
           let possible_values = HashMap::from_iter(
             values
-                .clone()
-                .into_iter()
-                .map(|(value, value_representation)| (value.to_string(), value_representation)),
+              .clone()
+              .into_iter()
+              .map(|(value, value_representation)| (value.to_string(), value_representation)),
           );
           if let Some(&Some(ref name)) = values.get(&(vcp_feature_value.value() as u8)) {
             current_value.1 = Some(name.clone());
@@ -127,9 +130,10 @@ impl Task for AsyncGetVcp {
         ValueType::Table {
           interpretation: _interpretation,
         } => {
-          let vcp_feature_value = display.handle
-              .table_read(self.feature_code)
-              .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+          let vcp_feature_value = display
+            .handle
+            .table_read(self.feature_code)
+            .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
           display.handle.sleep();
           Ok(Either3::C(Table {
             current_data: vcp_feature_value,
@@ -147,9 +151,10 @@ impl Task for AsyncGetVcp {
           }))
         }
         Err(_) => {
-          let vcp_feature_value = display.handle
-              .get_vcp_feature(self.feature_code)
-              .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+          let vcp_feature_value = display
+            .handle
+            .get_vcp_feature(self.feature_code)
+            .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
           let current_value = vcp_feature_value.value();
           let maximum_value = vcp_feature_value.maximum();
           display.handle.sleep();
@@ -172,7 +177,7 @@ pub struct AsyncSetVcp {
   display: Arc<Mutex<Display>>,
   feature_code: u8,
   value_or_offset: u16,
-  bytes: Option<Vec<u8>>
+  bytes: Option<Vec<u8>>,
 }
 
 #[napi]
@@ -184,16 +189,16 @@ impl Task for AsyncSetVcp {
     let mut display = self.display.lock().unwrap();
     if let Some(bytes) = self.bytes.clone() {
       display
-          .handle
-          .table_write(self.feature_code, self.value_or_offset, &bytes)
-          .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+        .handle
+        .table_write(self.feature_code, self.value_or_offset, &bytes)
+        .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
       display.handle.sleep();
       Ok(())
     } else {
       display
-          .handle
-          .set_vcp_feature(self.feature_code, self.value_or_offset)
-          .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
+        .handle
+        .set_vcp_feature(self.feature_code, self.value_or_offset)
+        .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
       display.handle.sleep();
       Ok(())
     }
@@ -212,21 +217,19 @@ impl JsDisplay {
       .into_iter()
       .nth(index as usize)
       .map(|display| JsDisplay::from_display(index, display))
-      .ok_or_else(|| Error::new(
-        Status::InvalidArg,
-        format!("Out of bound: There is no display at index {}", index),
-      ))
+      .ok_or_else(|| {
+        Error::new(
+          Status::InvalidArg,
+          format!("Out of bound: There is no display at index {}", index),
+        )
+      })
   }
 
   pub fn from_display(index: u32, mut display: Display) -> Self {
     JsDisplay {
       index,
       backend: display.info.backend.to_string(),
-      edid_data: display
-        .info
-        .edid_data
-        .clone()
-        .map(Uint8Array::new),
+      edid_data: display.info.edid_data.clone().map(Uint8Array::new),
       version: display
         .info
         .version
@@ -256,10 +259,7 @@ impl JsDisplay {
   }
 
   #[napi]
-  pub fn get_vcp_feature(
-    &mut self,
-    feature_code: u8,
-  ) -> AsyncTask<AsyncGetVcp> {
+  pub fn get_vcp_feature(&mut self, feature_code: u8) -> AsyncTask<AsyncGetVcp> {
     AsyncTask::new(AsyncGetVcp {
       display: self.display.clone(),
       feature_code,
