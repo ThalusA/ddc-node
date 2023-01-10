@@ -1,3 +1,3 @@
-# `@napi-rs/ddc-node-win32-x64-msvc`
+# `ddc-node-win32-x64-msvc`
 
-This is the **x86_64-pc-windows-msvc** binary for `@napi-rs/ddc-node`
+This is the **x86_64-pc-windows-msvc** binary for `ddc-node`

@@ -1,5 +1,5 @@
 {
-  "name": "@napi-rs/ddc-node-linux-arm64-gnu",
+  "name": "ddc-node-linux-arm64-gnu",
   "version": "1.0.0",
   "os": [
     "linux"
@@ -14,16 +14,18 @@
   "files": [
     "ddc-node.linux-arm64-gnu.node"
   ],
-  "description": "Template project for writing node package with napi-rs",
+  "description": "A high-level library for Node DDC/CI written in Rust for efficient and fast control of hardware",
   "keywords": [
     "napi-rs",
     "NAPI",
     "N-API",
     "Rust",
     "node-addon",
-    "node-addon-api"
+    "node-addon-api",
+    "DDC/CI",
+    "DDC"
   ],
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "engines": {
     "node": ">= 10"
   },
@@ -31,5 +33,5 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "repository": "git@github.com:napi-rs/ddc-node.git"
+  "repository": "git@github.com:ThalusA/ddc-node.git"
 }
