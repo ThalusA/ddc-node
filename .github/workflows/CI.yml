@@ -55,8 +55,8 @@ jobs:
             build: |-
               set -e &&
               sudo wget -q https://ziglang.org/download/0.10.0/zig-linux-x86_64-0.10.0.tar.xz -O zig.tar.xz &&
-              sudo tar -Jxvf zig.tar.xz zig-linux-x86_64-0.10.0/zig &&
-              sudo mv zig-linux-x86_64-0.10.0/zig /usr/bin/zig &&
+              sudo tar -Jxvf zig.tar.xz &&
+              sudo mv zig-linux-x86_64-0.10.0/zig zig-linux-x86_64-0.10.0/lib /usr/bin/ &&
               rm zig.tar.xz &&
               rmdir zig-linux-x86_64-0.10.0 &&
               sudo apt-get install -y pkg-config libudev-dev &&
