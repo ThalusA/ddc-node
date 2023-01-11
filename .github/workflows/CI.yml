@@ -54,6 +54,7 @@ jobs:
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             build: |-
               set -e &&
+              sudo apt-get update &&
               sudo dpkg --add-architecture arm64 &&
               sudo apt-get update &&
               sudo wget -q https://ziglang.org/download/0.10.0/zig-linux-x86_64-0.10.0.tar.xz -O zig.tar.xz &&
