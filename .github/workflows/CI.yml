@@ -56,6 +56,8 @@ jobs:
               set -e &&
               sudo dpkg --add-architecture arm64 &&
               echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ trusty-updates main universe" | sudo tee /etc/apt/sources.list &&
+              sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 40976EAF437D05B5 &&
+              sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32 &&
               sudo apt-get update &&
               sudo wget -q https://ziglang.org/download/0.10.0/zig-linux-x86_64-0.10.0.tar.xz -O zig.tar.xz &&
               sudo tar -Jxf zig.tar.xz zig-linux-x86_64-0.10.0/zig zig-linux-x86_64-0.10.0/lib &&
