@@ -63,6 +63,7 @@ jobs:
               sudo mv zig-linux-x86_64-0.10.0/zig zig-linux-x86_64-0.10.0/lib /usr/bin/ &&
               rm zig.tar.xz &&
               rmdir zig-linux-x86_64-0.10.0 &&
+              sudo apt-get search libudev &&
               sudo apt-get install -y libudev-dev:arm64 &&
               export PKG_CONFIG_ALLOW_CROSS=1 && 
               yarn build --target aarch64-unknown-linux-gnu &&
@@ -70,18 +71,15 @@ jobs:
           - host: windows-latest
             target: aarch64-pc-windows-msvc
             build: yarn build --target aarch64-pc-windows-msvc
-    name: stable - ${{ matrix.settings.target }} - node@16
+    name: stable - ${{ matrix.settings.target }} - node@18
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
       - name: Install
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         if: ${{ !matrix.settings.docker }}
         with:
-          profile: minimal
-          override: true
-          toolchain: stable
-          target: ${{ matrix.settings.target }}
+          targets: ${{ matrix.settings.target }}
       - name: Cache cargo
         uses: actions/cache@v3
         with:
@@ -96,7 +94,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .yarn/cache
-          key: npm-cache-build-${{ matrix.settings.target }}-node@16
+          key: npm-cache-build-${{ matrix.settings.target }}-node@18
       - name: Setup toolchain
         run: ${{ matrix.settings.setup }}
         if: ${{ matrix.settings.setup }}
@@ -123,7 +121,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           check-latest: true
           cache: yarn
       - name: Cache NPM dependencies
