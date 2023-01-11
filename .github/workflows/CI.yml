@@ -53,6 +53,7 @@ jobs:
             build: |-
               set -e &&
               sudo apt-get update &&
+              sudo apt-get install -y libudev-dev &&
               sudo dpkg --add-architecture arm64 &&
               echo "deb [arch=arm64] http://ports.ubuntu.com/ jammy main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list &&
               echo "deb [arch=arm64] http://ports.ubuntu.com/ jammy-updates main restricted universe multiverse" | sudo tee -a  /etc/apt/sources.list &&
