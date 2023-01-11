@@ -54,12 +54,12 @@ jobs:
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             build: |-
               set -e &&
-              sudo wget https://ziglang.org/download/0.10.0/zig-linux-aarch64-0.10.0.tar.xz -O zig.tar.xz &&
-              sudo tar -Jxvf zig.tar.xz zig-linux-aarch64-0.10.0/zig &&
-              sudo mv zig-linux-aarch64-0.10.0/zig /usr/bin/zig &&
+              sudo wget -q https://ziglang.org/download/0.10.0/zig-linux-x86_64-0.10.0.tar.xz -O zig.tar.xz &&
+              sudo tar -Jxvf zig.tar.xz zig-linux-x86_64-0.10.0/zig &&
+              sudo mv zig-linux-x86_64-0.10.0/zig /usr/bin/zig &&
               rm zig.tar.xz &&
-              rmdir zig-linux-aarch64-0.10.0 &&
-              sudo apt-get install -y pkg-config libudev-dev &&
+              rmdir zig-linux-x86_64-0.10.0 &&
+              sudo apt-get install -y pkg-config libudev-dev:arm64 &&
               export PKG_CONFIG_ALLOW_CROSS=1 && 
               yarn build --target aarch64-unknown-linux-gnu &&
               aarch64-unknown-linux-gnu-strip *.node
