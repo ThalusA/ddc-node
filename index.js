@@ -31,7 +31,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./ddc-node.android-arm64.node')
           } else {
-            nativeBinding = require('ddc-node-android-arm64')
+            nativeBinding = require('@ddc-node/ddc-node-android-arm64')
           }
         } catch (e) {
           loadError = e
@@ -43,7 +43,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./ddc-node.android-arm-eabi.node')
           } else {
-            nativeBinding = require('ddc-node-android-arm-eabi')
+            nativeBinding = require('@ddc-node/ddc-node-android-arm-eabi')
           }
         } catch (e) {
           loadError = e
@@ -61,7 +61,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./ddc-node.win32-x64-msvc.node')
           } else {
-            nativeBinding = require('ddc-node-win32-x64-msvc')
+            nativeBinding = require('@ddc-node/ddc-node-win32-x64-msvc')
           }
         } catch (e) {
           loadError = e
@@ -73,7 +73,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./ddc-node.win32-ia32-msvc.node')
           } else {
-            nativeBinding = require('ddc-node-win32-ia32-msvc')
+            nativeBinding = require('@ddc-node/ddc-node-win32-ia32-msvc')
           }
         } catch (e) {
           loadError = e
@@ -85,7 +85,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./ddc-node.win32-arm64-msvc.node')
           } else {
-            nativeBinding = require('ddc-node-win32-arm64-msvc')
+            nativeBinding = require('@ddc-node/ddc-node-win32-arm64-msvc')
           }
         } catch (e) {
           loadError = e
@@ -101,7 +101,7 @@ switch (platform) {
       if (localFileExisted) {
         nativeBinding = require('./ddc-node.darwin-universal.node')
       } else {
-        nativeBinding = require('ddc-node-darwin-universal')
+        nativeBinding = require('@ddc-node/ddc-node-darwin-universal')
       }
       break
     } catch {}
@@ -112,7 +112,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./ddc-node.darwin-x64.node')
           } else {
-            nativeBinding = require('ddc-node-darwin-x64')
+            nativeBinding = require('@ddc-node/ddc-node-darwin-x64')
           }
         } catch (e) {
           loadError = e
@@ -124,7 +124,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./ddc-node.darwin-arm64.node')
           } else {
-            nativeBinding = require('ddc-node-darwin-arm64')
+            nativeBinding = require('@ddc-node/ddc-node-darwin-arm64')
           }
         } catch (e) {
           loadError = e
@@ -143,7 +143,7 @@ switch (platform) {
       if (localFileExisted) {
         nativeBinding = require('./ddc-node.freebsd-x64.node')
       } else {
-        nativeBinding = require('ddc-node-freebsd-x64')
+        nativeBinding = require('@ddc-node/ddc-node-freebsd-x64')
       }
     } catch (e) {
       loadError = e
@@ -158,7 +158,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./ddc-node.linux-x64-musl.node')
             } else {
-              nativeBinding = require('ddc-node-linux-x64-musl')
+              nativeBinding = require('@ddc-node/ddc-node-linux-x64-musl')
             }
           } catch (e) {
             loadError = e
@@ -169,7 +169,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./ddc-node.linux-x64-gnu.node')
             } else {
-              nativeBinding = require('ddc-node-linux-x64-gnu')
+              nativeBinding = require('@ddc-node/ddc-node-linux-x64-gnu')
             }
           } catch (e) {
             loadError = e
@@ -183,7 +183,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./ddc-node.linux-arm64-musl.node')
             } else {
-              nativeBinding = require('ddc-node-linux-arm64-musl')
+              nativeBinding = require('@ddc-node/ddc-node-linux-arm64-musl')
             }
           } catch (e) {
             loadError = e
@@ -194,7 +194,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./ddc-node.linux-arm64-gnu.node')
             } else {
-              nativeBinding = require('ddc-node-linux-arm64-gnu')
+              nativeBinding = require('@ddc-node/ddc-node-linux-arm64-gnu')
             }
           } catch (e) {
             loadError = e
@@ -207,7 +207,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./ddc-node.linux-arm-gnueabihf.node')
           } else {
-            nativeBinding = require('ddc-node-linux-arm-gnueabihf')
+            nativeBinding = require('@ddc-node/ddc-node-linux-arm-gnueabihf')
           }
         } catch (e) {
           loadError = e
