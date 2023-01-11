@@ -6,7 +6,7 @@
 export const enum VcpValueType {
   Continuous = 0,
   NonContinuous = 1,
-  Table = 2,
+  Table = 2
 }
 export interface Continuous {
   currentValue: number
@@ -28,7 +28,7 @@ export const enum JsQueryType {
   Id = 1,
   ManufacturerId = 2,
   ModelName = 3,
-  SerialNumber = 4,
+  SerialNumber = 4
 }
 export interface Query {
   queryType: JsQueryType
@@ -52,11 +52,7 @@ export class Display {
   capabilities?: string
   constructor(index: number)
   getVcpFeature(featureCode: number): Promise<Continuous | NonContinuous | Table>
-  setVcpFeature(
-    featureCode: number,
-    valueOrOffset: number,
-    bytes?: Array<number> | undefined | null,
-  ): Promise<undefined>
+  setVcpFeature(featureCode: number, valueOrOffset: number, bytes?: Array<number> | undefined | null): Promise<undefined>
 }
 export type JsDisplayManager = DisplayManager
 export class DisplayManager {
@@ -76,7 +72,7 @@ export namespace VCPFeatureCode {
     RestoreFactoryGeometryDefaults = 6,
     RestoreFactoryLuminanceContrastDefaults = 5,
     RestoreFactoryTvDefaults = 10,
-    SaveRestoreSettings = 176,
+    SaveRestoreSettings = 176
   }
   export const enum ImageAdjustment {
     SixAxisHueControlBlue = 159,
@@ -137,7 +133,7 @@ export namespace VCPFeatureCode {
     WindowControlOnOff = 164,
     WindowSelect = 165,
     WindowSize = 166,
-    WindowTransparency = 167,
+    WindowTransparency = 167
   }
   export const enum DisplayControl {
     DisplayControllerId = 200,
@@ -151,7 +147,7 @@ export namespace VCPFeatureCode {
     SourceColorCoding = 181,
     SourceTimingMode = 180,
     Version = 223,
-    VerticalFrequency = 174,
+    VerticalFrequency = 174
   }
   export const enum Geometry {
     BottomCornerFlare = 74,
@@ -186,7 +182,7 @@ export namespace VCPFeatureCode {
     WindowPositionBrX = 151,
     WindowPositionBrY = 152,
     WindowPositionTlX = 149,
-    WindowPositionTlY = 150,
+    WindowPositionTlY = 150
   }
   export const enum Miscellaneous {
     ActiveControl = 82,
@@ -211,7 +207,7 @@ export namespace VCPFeatureCode {
     SoftControls = 3,
     StatusIndicators = 205,
     TransmitDisplayDescriptor = 195,
-    TvChannelUpDown = 139,
+    TvChannelUpDown = 139
   }
   export const enum Audio {
     BalanceLR = 147,
@@ -222,7 +218,7 @@ export namespace VCPFeatureCode {
     ProcessorMode = 148,
     SpeakerSelect = 99,
     SpeakerVolume = 98,
-    Treble = 143,
+    Treble = 143
   }
   export const enum Dpvl {
     BodyCrcErrorCount = 188,
@@ -232,6 +228,6 @@ export namespace VCPFeatureCode {
     MonitorStatus = 183,
     MonitorXOrigin = 185,
     MonitorYOrigin = 186,
-    PacketCount = 184,
+    PacketCount = 184
   }
 }
