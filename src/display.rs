@@ -1,10 +1,10 @@
+use ddc::{Ddc, DdcHost, DdcTable};
 use mccs_db::ValueType;
 use napi::bindgen_prelude::*;
 use napi::JsUndefined;
 use napi_derive::napi;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use ddc::{Ddc, DdcHost, DdcTable};
 
 pub struct Display(pub ddc_hi::Display);
 
@@ -77,7 +77,7 @@ impl Task for AsyncGetVcp {
       match feature.ty {
         ValueType::Unknown => {
           let vcp_feature_value = display
-              .0
+            .0
             .handle
             .get_vcp_feature(self.feature_code)
             .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
@@ -93,7 +93,8 @@ impl Task for AsyncGetVcp {
         ValueType::Continuous {
           interpretation: _interpretation,
         } => {
-          let vcp_feature_value = display.0
+          let vcp_feature_value = display
+            .0
             .handle
             .get_vcp_feature(self.feature_code)
             .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
@@ -110,7 +111,8 @@ impl Task for AsyncGetVcp {
           ref values,
           interpretation: _interpretation,
         } => {
-          let vcp_feature_value = display.0
+          let vcp_feature_value = display
+            .0
             .handle
             .get_vcp_feature(self.feature_code)
             .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
@@ -135,7 +137,8 @@ impl Task for AsyncGetVcp {
         ValueType::Table {
           interpretation: _interpretation,
         } => {
-          let vcp_feature_value = display.0
+          let vcp_feature_value = display
+            .0
             .handle
             .table_read(self.feature_code)
             .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
@@ -156,7 +159,8 @@ impl Task for AsyncGetVcp {
           }))
         }
         Err(_) => {
-          let vcp_feature_value = display.0
+          let vcp_feature_value = display
+            .0
             .handle
             .get_vcp_feature(self.feature_code)
             .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
@@ -193,14 +197,16 @@ impl Task for AsyncSetVcp {
   fn compute(&mut self) -> Result<Self::Output> {
     let mut display = self.display.lock().unwrap();
     if let Some(bytes) = self.bytes.clone() {
-      display.0
+      display
+        .0
         .handle
         .table_write(self.feature_code, self.value_or_offset, &bytes)
         .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
       display.0.handle.sleep();
       Ok(())
     } else {
-      display.0
+      display
+        .0
         .handle
         .set_vcp_feature(self.feature_code, self.value_or_offset)
         .map_err(|error| Error::new(Status::GenericFailure, error.to_string()))?;
