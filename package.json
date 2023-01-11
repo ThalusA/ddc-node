@@ -1,5 +1,5 @@
 {
-  "name": "ddc-node",
+  "name": "@ddc-node/ddc-node",
   "version": "1.0.0",
   "author": "Alexandre MONIER <alexandre.monierc@gmail.com>",
   "description": "A high-level DDC/CI library for Node written in Rust for efficient and fast control of hardware",

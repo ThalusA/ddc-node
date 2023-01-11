@@ -1,5 +1,5 @@
 {
-  "name": "ddc-node-darwin-arm64",
+  "name": "@ddc-node/ddc-node-darwin-arm64",
   "version": "1.0.0",
   "os": [
     "darwin"

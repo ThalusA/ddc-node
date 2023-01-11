@@ -1,5 +1,5 @@
 {
-  "name": "ddc-node-win32-x64-msvc",
+  "name": "@ddc-node/ddc-node-win32-x64-msvc",
   "version": "1.0.0",
   "os": [
     "win32"
