@@ -54,7 +54,7 @@ jobs:
               set -e &&
               sudo apt-get update &&
               sudo dpkg --add-architecture arm64 &&
-              sudo apt-get update &&
+              sudo apt-get update || true &&
               sudo wget -q https://ziglang.org/download/0.10.0/zig-linux-x86_64-0.10.0.tar.xz -O zig.tar.xz &&
               sudo tar -Jxf zig.tar.xz zig-linux-x86_64-0.10.0/zig zig-linux-x86_64-0.10.0/lib &&
               sudo mv zig-linux-x86_64-0.10.0/zig zig-linux-x86_64-0.10.0/lib /usr/bin/ &&
@@ -91,10 +91,6 @@ jobs:
         with:
           path: .yarn/cache
           key: npm-cache-build-${{ matrix.settings.target }}-node@18
-      - name: Setup toolchain
-        run: ${{ matrix.settings.setup }}
-        if: ${{ matrix.settings.setup }}
-        shell: bash
       - name: Install dependencies
         run: yarn install
       - name: Build
