@@ -2,7 +2,7 @@
   "name": "ddc-node",
   "version": "1.0.0",
   "author": "Alexandre MONIER <alexandre.monierc@gmail.com>",
-  "description": "A high-level library for Node DDC/CI written in Rust for efficient and fast control of hardware",
+  "description": "A high-level DDC/CI library for Node written in Rust for efficient and fast control of hardware",
   "main": "index.js",
   "repository": "git@github.com:ThalusA/ddc-node.git",
   "homepage": "https://github.com/ThalusA/ddc-node#readme",

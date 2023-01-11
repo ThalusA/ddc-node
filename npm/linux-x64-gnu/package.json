@@ -14,7 +14,7 @@
   "files": [
     "ddc-node.linux-x64-gnu.node"
   ],
-  "description": "A high-level library for Node DDC/CI written in Rust for efficient and fast control of hardware",
+  "description": "A high-level DDC/CI library for Node written in Rust for efficient and fast control of hardware",
   "keywords": [
     "napi-rs",
     "NAPI",

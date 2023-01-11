@@ -2,7 +2,7 @@
 
 ![https://github.com/ThalusA/ddc-node/actions](https://github.com/ThalusA/ddc-node/workflows/CI/badge.svg)
 
-`ddc-node` A high-level [DDC/CI](https://en.wikipedia.org/wiki/Display_Data_Channel) library for Node written in Rust for efficient and fast control of hardware.
+`ddc-node` is a high-level [DDC/CI](https://en.wikipedia.org/wiki/Display_Data_Channel) library for Node written in Rust for efficient and fast control of hardware.
 
 ## Usage
 
