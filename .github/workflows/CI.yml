@@ -52,12 +52,7 @@ jobs:
             target: aarch64-unknown-linux-gnu
             build: |-
               set -e &&
-              sudo apt-get update &&
-              sudo apt-get install -y dirmngr &&
               sudo dpkg --add-architecture arm64 &&
-              echo "deb [arch=arm64] http://ports.ubuntu.com/ jammy main restricted universe multiverse" | sudo tee /etc/apt/sources.list &&
-              echo "deb [arch=arm64] http://ports.ubuntu.com/ jammy-updates main restricted universe multiverse" | sudo tee /etc/apt/sources.list &&
-              echo "deb [arch=arm64] http://ports.ubuntu.com/ jammy-security main restricted universe multiverse" | sudo tee /etc/apt/sources.list &&
               sudo apt-get update &&
               sudo wget -q https://ziglang.org/download/0.10.0/zig-linux-x86_64-0.10.0.tar.xz -O zig.tar.xz &&
               sudo tar -Jxf zig.tar.xz zig-linux-x86_64-0.10.0/zig zig-linux-x86_64-0.10.0/lib &&
