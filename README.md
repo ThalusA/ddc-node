@@ -9,7 +9,7 @@
 ```typescript
 import { DisplayManager, VCPFeatureCode } from "@ddc-node/ddc-node";
 
-const displays = new DisplayManager().collect();
+const displays = await (new DisplayManager()).collect();
 
 for (const display of displays) {
     const vcp_feature = await display.getVcpFeature(VCPFeatureCode.ImageAdjustment.Luminance);

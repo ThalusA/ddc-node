@@ -61,8 +61,8 @@ export class DisplayManager {
   get queries(): Array<Query>
   set queries(queries: Array<Query>)
   addQueries(queries?: Query | Array<Query> | undefined | null): void
-  collect(): Array<Display>
-  list(): Array<Display>
+  collect(): Promise<Array<Display>>
+  list(): Promise<Array<Display>>
 }
 export namespace VCPFeatureCode {
   export const enum PresetFunctions {

@@ -110,6 +110,28 @@ impl TryFrom<&Query> for JsQuery {
   }
 }
 
+pub struct CollectDisplays {}
+
+#[napi]
+impl Task for CollectDisplays {
+  type Output = Vec<JsDisplay>;
+  type JsValue = Vec<JsDisplay>;
+
+  fn compute(&mut self) -> Result<Self::Output> {
+    Ok(
+      Display::enumerate()
+        .into_iter()
+        .enumerate()
+        .map(|(index, display)| JsDisplay::from_display(index as u32, display))
+        .collect(),
+    )
+  }
+
+  fn resolve(&mut self, _: Env, output: Self::Output) -> Result<Self::JsValue> {
+    Ok(output)
+  }
+}
+
 #[napi]
 impl JsDisplayManager {
   #[napi(constructor)]
@@ -165,16 +187,12 @@ impl JsDisplayManager {
   }
 
   #[napi]
-  pub fn collect(&self) -> Vec<JsDisplay> {
-    Display::enumerate()
-      .into_iter()
-      .enumerate()
-      .map(|(index, display)| JsDisplay::from_display(index as u32, display))
-      .collect()
+  pub fn collect(&self) -> AsyncTask<CollectDisplays> {
+    AsyncTask::new(CollectDisplays {})
   }
 
   #[napi]
-  pub fn list(&self) -> Vec<JsDisplay> {
+  pub fn list(&self) -> AsyncTask<CollectDisplays> {
     self.collect()
   }
 }
