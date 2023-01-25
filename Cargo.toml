@@ -2,7 +2,7 @@
 authors = ["Alexandre MONIER <alexandre.monierc@gmail.com>"]
 edition = "2021"
 name = "ddc-node"
-version = "1.0.1"
+version = "1.0.2"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -13,8 +13,8 @@ crate-type = ["cdylib"]
 ddc = "0.2.2"
 ddc-hi = "0.4.1"
 mccs-db = "0.1.2"
-napi = {version = "2.10.9", features = ["async"]}
-napi-derive = "2.9.5"
+napi = {version = "2.10.11", features = ["async"]}
+napi-derive = "2.10.0"
 
 [build-dependencies]
 napi-build = "2.0.1"
