@@ -57,6 +57,7 @@ export class Display {
     valueOrOffset: number,
     bytes?: Array<number> | undefined | null,
   ): Promise<undefined>
+  updateCapabilities(): string | null
 }
 export type JsDisplayManager = DisplayManager
 export class DisplayManager {

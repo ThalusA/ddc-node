@@ -123,7 +123,7 @@ impl Task for AsyncGetVcp {
               .into_iter()
               .map(|(value, value_representation)| (value.to_string(), value_representation)),
           );
-          if let Some(&Some(ref name)) = values.get(&(vcp_feature_value.value() as u8)) {
+          if let Some(Some(name)) = values.get(&(vcp_feature_value.value() as u8)) {
             current_value.1 = Some(name.clone());
           }
           display.0.handle.sleep();
@@ -236,8 +236,8 @@ impl JsDisplay {
       })
   }
 
-  pub fn from_display(index: u32, mut display: ddc_hi::Display) -> Self {
-    JsDisplay {
+  pub fn from_display(index: u32, display: ddc_hi::Display) -> Self {
+    let mut js_display = JsDisplay {
       index,
       backend: display.info.backend.to_string(),
       edid_data: display.info.edid_data.clone().map(Uint8Array::new),
@@ -257,16 +257,11 @@ impl JsDisplay {
       manufacturer_id: display.info.manufacturer_id.clone(),
       manufacture_year: display.info.manufacture_year,
       manufacture_week: display.info.manufacture_week,
-      capabilities: display
-        .handle
-        .capabilities_string()
-        .map_or(None, |capabilities_string| {
-          std::str::from_utf8(capabilities_string.as_slice()).map_or(None, |capabilities_string| {
-            Some(capabilities_string.to_string())
-          })
-        }),
+      capabilities: None,
       display: Arc::new(Mutex::new(Display(display))),
-    }
+    };
+    js_display.update_capabilities();
+    js_display
   }
 
   #[napi]
@@ -290,5 +285,19 @@ impl JsDisplay {
       value_or_offset,
       bytes,
     })
+  }
+
+  #[napi]
+  pub fn update_capabilities(&mut self) -> Option<String> {
+    let mut display = self.display.lock().unwrap();
+    display
+        .0
+        .handle
+        .capabilities_string()
+        .map_or(None, |capabilities_string| {
+          std::str::from_utf8(capabilities_string.as_slice()).map_or(None, |capabilities_string| {
+            Some(capabilities_string.to_string())
+          })
+        })
   }
 }
