@@ -2,7 +2,6 @@ use napi_derive::napi;
 
 #[napi(js_name = "VCPFeatureCode")]
 pub mod vcp_feature_code {
-  use napi::bindgen_prelude::*;
 
   #[napi]
   pub enum PresetFunctions {

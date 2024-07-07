@@ -7,14 +7,14 @@
 ## Usage
 
 ```typescript
-import { DisplayManager, VCPFeatureCode } from "@ddc-node/ddc-node";
+import { DisplayManager, VCPFeatureCode } from '@ddc-node/ddc-node'
 
-const displays = await (new DisplayManager()).collect();
+const displays = await new DisplayManager().collect()
 
 for (const display of displays) {
-    const vcp_feature = await display.getVcpFeature(VCPFeatureCode.ImageAdjustment.Luminance);
-    console.info(`Display at index ${display.index} have a brightness value of`);
-    console.info(vcp_feature);
-    await display.setVcpFeature(VCPFeatures.ImageAdjustment.Luminance, vcp_feature.currentValue + 5);
+  const vcp_feature = await display.getVcpFeature(VCPFeatureCode.ImageAdjustment.Luminance)
+  console.info(`Display at index ${display.index} have a brightness value of`)
+  console.info(vcp_feature)
+  await display.setVcpFeature(VCPFeatures.ImageAdjustment.Luminance, vcp_feature.currentValue + 5)
 }
 ```

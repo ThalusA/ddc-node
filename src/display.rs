@@ -291,13 +291,13 @@ impl JsDisplay {
   pub fn update_capabilities(&mut self) -> Option<String> {
     let mut display = self.display.lock().unwrap();
     display
-        .0
-        .handle
-        .capabilities_string()
-        .map_or(None, |capabilities_string| {
-          std::str::from_utf8(capabilities_string.as_slice()).map_or(None, |capabilities_string| {
-            Some(capabilities_string.to_string())
-          })
+      .0
+      .handle
+      .capabilities_string()
+      .map_or(None, |capabilities_string| {
+        std::str::from_utf8(capabilities_string.as_slice()).map_or(None, |capabilities_string| {
+          Some(capabilities_string.to_string())
         })
+      })
   }
 }
